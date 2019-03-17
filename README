@@ -1,0 +1,24 @@
+ALU:
+ALU has three inputs (ALU Control and 2 operands) and two outputs (zero, ALU result). In the ALU module, a case statement is needed to match operations with corresponding ALU control codes. After that, assign value to the zero variable according to the value to ALU result (1 if ALU result is 0).
+
+Data Memory:
+Data memory has 5 inputs (clock, address, MemRead, MemWrite, writeData) and 1 output (ReadData). I have both read and write at the positive edge of the clock, then check whether the memory should read or write. If read, output the data in the requested address; If write, save the data in the corresponding address.
+
+Register Files:
+Register file has 6 inputs (clock, reset, read_sel1 & 2, write, write_data, write_sel) and 2 outputs (read_data1 & 2). First, the module assign read_data1 and 2 with corresponding value, then write data to the corresponding register if write_sel is equal to 1.
+
+Program Counter: 
+Always start from 0 address in the instruction memory. Inside the
+module, increment by 1 (equivalent of incrementing by 4 in real computer) every time. Also check whether it should jump to a certain instruction by checking zero and Branch variable, and this is only for instruction beq.
+
+Instruction Memory: 
+Use same memory module written for data memory. When calling it in the top module, always pass in MemRead as 1 and MemWrite as 0.
+
+Control Unit: 
+Take in the whole instruction as input, and determine the output values (ALU_Op, read_sel_a, read_sel_b, write_sel, SignExtend, Branch, MemRead, MemWrite, MemtoReg, ALUSrc, RegWrite and RegDst). It checks the first 6 bits of the instruction, and that is enough to determine if it is R-type, addi, lw/sw or beq. If it is R-type, then check the last 6 bits for specific ALU operation. The Control Unit also determine the sign extend by first identifying whether the number is positive, then add 16 bits of 1 or 0 before the sign extend output.
+
+ALU Control: 
+ALU Control takes the ALU_Op as input, identify what type of operation ALU should perform, and output ALU_Control to ALU.
+
+CPU:
+Call each module once (except for memory module which is called twice for both data memory and instruction memory). Declare corresponding wire variables, and connect them to the correct ports of each sub-module.
